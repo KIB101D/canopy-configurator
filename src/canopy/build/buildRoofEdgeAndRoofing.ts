@@ -2,7 +2,7 @@ import * as THREE from "three";
 import type { Dimensions } from "../dims";
 import type { LoadedModels } from "../loadModel";
 import { createBeamBetweenPoints } from "../helpers/createBeamBetweenPoints";
-import { OUTER_FASCIA_OVERHANG } from "./Buildfascialayers";
+import { OUTER_FASCIA_OVERHANG } from "./buildFasciaLayers";
 
 export function buildRoofEdge(
   dims: Dimensions,

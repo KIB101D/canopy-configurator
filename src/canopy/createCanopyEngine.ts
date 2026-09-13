@@ -5,16 +5,16 @@ import { loadAllModels } from "./loadModel";
 import type { LoadedModels } from "./loadModel";
 import type { CanopyMaterials } from "./loadModel";
 import { applyMaterial } from "./loadModel";
-import { buildColumns, buildCornerBraces } from "./build/Buildframe";
-import { buildRimBeam } from "./build/Buildrimbeam";
-import { buildInnerFascia, buildOuterFascia } from "./build/Buildfascialayers";
+import { buildColumns, buildCornerBraces } from "./build/buildFrame";
+import { buildRimBeam } from "./build/buildRimBeam";
+import { buildInnerFascia, buildOuterFascia } from "./build/buildFasciaLayers";
 import {
   buildDecking,
   buildRafters,
   buildLongRafters,
   buildInserts,
-} from "./build/Buildroofstructure";
-import { buildRoofEdge, buildRoofing } from "./build/Buildroofedgeandroofing";
+} from "./build/buildRoofStructure";
+import { buildRoofEdge, buildRoofing } from "./build/buildRoofEdgeAndRoofing";
 
 export function createCanopyEngine(host: HTMLDivElement) {
   const scene = new THREE.Scene();

@@ -1,4 +1,4 @@
-import { createCanopyEngine } from "./canopy/Createcanopyengine";
+import { createCanopyEngine } from "./canopy/createCanopyEngine";
 import type { Dimensions } from "./canopy/dims";
 
 const host = document.querySelector<HTMLDivElement>("#canvas-host")!;
