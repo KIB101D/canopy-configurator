@@ -104,11 +104,12 @@ export function buildInserts(
   const rimBeamTopY = dims.height + 0.15;
 
   const sides = [-halfDepth, halfDepth];
-  const insertCount = 4;
+  const insertStep = 0.6; // 600мм, крок з документації
+  const insertCount = Math.ceil(dims.width / insertStep) + 1;
   const insertNativeLength = 0.2;
   const rimBeamOuterEdge = 0.075;
   const fasciaInsetOverlap = 0.01;
-  const extendInwardNear = 0.1; // асиметрична поправка, підібрана вручну на -halfDepth стороні
+  const extendInwardNear = 0.1;
 
   for (const z of sides) {
     const direction = z < 0 ? -1 : 1;
