@@ -117,8 +117,7 @@ export async function loadAllModels(): Promise<{
     roofingTile,
   };
 
-  // призначаємо правильний матеріал кожному типу деталі ОДИН РАЗ,
-  // до будь-яких .clone() — клони автоматично успадкують те саме посилання на матеріал
+  // призначаємо правильний матеріал кожному типу деталі
   applyMaterial(models.column, materials.wood);
   applyMaterial(models.cornerBeam, materials.wood);
   applyMaterial(models.rimBeam, materials.wood);

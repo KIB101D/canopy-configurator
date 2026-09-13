@@ -3,6 +3,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { Dimensions } from "./Dims";
 import { loadAllModels } from "./loadModel";
 import type { LoadedModels } from "./loadModel";
+import type { CanopyMaterials } from "./loadModel";
+import { applyMaterial } from "./loadModel";
 import { buildColumns, buildCornerBraces } from "./build/Buildframe";
 import { buildRimBeam } from "./build/Buildrimbeam";
 import { buildInnerFascia, buildOuterFascia } from "./build/Buildfascialayers";
@@ -48,20 +50,17 @@ export function createCanopyEngine(host: HTMLDivElement) {
   scene.add(new THREE.GridHelper(10, 10));
 
   let models: LoadedModels | null = null;
+  let materials: CanopyMaterials | null = null;
+  const grayMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc });
+  let lastDims: Dimensions | null = null;
   let currentGroup: THREE.Group | null = null;
 
   async function init() {
     const result = await loadAllModels();
-    models = result.models; // матеріали вже призначені всередині loadAllModels
+    models = result.models;
+    materials = result.materials;
   }
 
-  // ВАЖЛИВО: НЕ викликаємо geometry.dispose()/material.dispose() тут.
-  // .clone() у Three.js не копіює geometry/material глибоко — усі копії
-  // однієї деталі ділять ті самі спільні об'єкти (завантажені один раз у init()).
-  // dispose() на одному екземплярі знищив би дані для геометрії/матеріалу
-  // ВСІХ інших копій цієї ж деталі, зламавши наступні виклики rebuild().
-  // Просто прибираємо стару групу зі сцени — сам JS garbage collector
-  // прибере обгортки Object3D, а спільна geometry/material лишається живою.
   function removeGroup(group: THREE.Group) {
     scene.remove(group);
   }
@@ -70,6 +69,8 @@ export function createCanopyEngine(host: HTMLDivElement) {
     if (!models) {
       throw new Error("Models not loaded yet — call init() first");
     }
+
+    lastDims = dims;
 
     if (currentGroup) {
       removeGroup(currentGroup);
@@ -95,6 +96,34 @@ export function createCanopyEngine(host: HTMLDivElement) {
     controls.update();
   }
 
+  function setTexturesEnabled(enabled: boolean) {
+    if (!models || !materials) {
+      throw new Error("Models not loaded yet — call init() first");
+    }
+
+    const wood = enabled ? materials.wood : grayMaterial;
+    const asphalt = enabled ? materials.asphalt : grayMaterial;
+    const aluminium = enabled ? materials.aluminium : grayMaterial;
+
+    applyMaterial(models.column, wood);
+    applyMaterial(models.cornerBeam, wood);
+    applyMaterial(models.rimBeam, wood);
+    applyMaterial(models.fascia, wood);
+    applyMaterial(models.decking, wood);
+    applyMaterial(models.rafter, wood);
+    applyMaterial(models.insert, wood);
+    applyMaterial(models.roofEdgeStraight, aluminium);
+    applyMaterial(models.roofEdgeCorner, aluminium);
+    applyMaterial(models.roofingTile, asphalt);
+
+    // перебудовуємо, щоб уже видимі копії на сцені підхопили нове посилання на матеріал
+    // (.clone() копіює посилання на матеріал В МОМЕНТ клонування, тому старі
+    // інстанси на сцені самі по собі не змінюються — треба перестворити їх)
+    if (lastDims) {
+      rebuild(lastDims);
+    }
+  }
+
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
@@ -114,5 +143,5 @@ export function createCanopyEngine(host: HTMLDivElement) {
     controls.dispose();
   }
 
-  return { init, rebuild, dispose };
+  return { init, rebuild, setTexturesEnabled, dispose };
 }

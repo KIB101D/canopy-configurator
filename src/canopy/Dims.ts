@@ -1,5 +1,5 @@
 export interface Dimensions {
-  width: number; // м, вздовж X
-  height: number; // м, висота колони, вздовж Y
-  depth: number; // м, вздовж Z
+  width: number; // м, axis X
+  height: number; // м, axis Y
+  depth: number; // м, axis Z
 }

@@ -7,50 +7,195 @@
       body {
         margin: 0;
         overflow: hidden;
-        font-family: sans-serif;
+        font-family: -apple-system, "Segoe UI", sans-serif;
       }
       canvas {
         display: block;
       }
-      #controls {
+
+      #dims-bar {
         position: fixed;
-        top: 12px;
-        left: 12px;
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        padding: 12px 16px;
-        border-radius: 8px;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
         display: flex;
-        flex-direction: column;
-        gap: 8px;
+        align-items: stretch;
+        background: #1c1c1a;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
         z-index: 10;
       }
-      #controls label {
+
+      .dim-field {
         display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        font-size: 14px;
+        flex-direction: column;
+        justify-content: center;
+        padding: 8px 18px;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
       }
-      #controls input {
-        width: 70px;
+      .dim-field:last-child {
+        border-right: none;
+      }
+
+      .dim-field label {
+        font-size: 11px;
+        color: #9a9690;
+        letter-spacing: 0.02em;
+        margin-bottom: 2px;
+      }
+
+      .dim-value {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .stepper {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      .stepper button {
+        all: unset;
+        cursor: pointer;
+        width: 12px;
+        height: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6a665f;
+        font-size: 8px;
+        line-height: 1;
+        transition: color 0.15s ease;
+      }
+
+      .stepper button:hover {
+        color: #b8783c;
+      }
+
+      .dim-field input {
+        width: 48px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        color: #ece8e0;
+        font-family: "SF Mono", "Consolas", monospace;
+        font-size: 16px;
+        padding: 2px 0;
+        transition: border-color 0.15s ease;
+      }
+      .dim-field input:focus {
+        outline: none;
+        border-bottom-color: #b8783c;
+      }
+      .dim-field input::-webkit-outer-spin-button,
+      .dim-field input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .dim-unit {
+        font-size: 13px;
+        color: #b8783c;
+      }
+
+      #texture-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #1c1c1a;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        padding: 10px 14px;
+        color: #ece8e0;
+        font-size: 13px;
+        z-index: 10;
+      }
+      #texture-toggle input {
+        accent-color: #b8783c;
       }
     </style>
   </head>
   <body>
     <div id="canvas-host"></div>
     <div id="controls">
-      <label
-        >Ширина (м):
-        <input id="width" type="number" min="2" max="8" step="0.1" value="3"
-      /></label>
-      <label
-        >Висота (м):
-        <input id="height" type="number" min="2" max="8" step="0.1" value="2.2"
-      /></label>
-      <label
-        >Глибина (м):
-        <input id="depth" type="number" min="2" max="8" step="0.1" value="5"
-      /></label>
+      <div id="dims-bar">
+        <div class="dim-field">
+          <label>width</label>
+          <div class="dim-value">
+            <input
+              id="width"
+              type="number"
+              min="2"
+              max="8"
+              step="0.1"
+              value="3"
+            />
+            <span class="dim-unit">m</span>
+            <div class="stepper">
+              <button type="button" class="step-up" data-target="width">
+                ▲
+              </button>
+              <button type="button" class="step-down" data-target="width">
+                ▼
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="dim-field">
+          <label>height</label>
+          <div class="dim-value">
+            <input
+              id="height"
+              type="number"
+              min="2"
+              max="8"
+              step="0.1"
+              value="2.2"
+            />
+            <span class="dim-unit">m</span>
+            <div class="stepper">
+              <button type="button" class="step-up" data-target="height">
+                ▲
+              </button>
+              <button type="button" class="step-down" data-target="height">
+                ▼
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="dim-field">
+          <label>depth</label>
+          <div class="dim-value">
+            <input
+              id="depth"
+              type="number"
+              min="2"
+              max="8"
+              step="0.1"
+              value="5"
+            />
+            <span class="dim-unit">m</span>
+            <div class="stepper">
+              <button type="button" class="step-up" data-target="depth">
+                ▲
+              </button>
+              <button type="button" class="step-down" data-target="depth">
+                ▼
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <label id="texture-toggle">
+        <input id="textures-checkbox" type="checkbox" checked />
+        textures
+      </label>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

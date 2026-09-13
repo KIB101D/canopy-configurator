@@ -3,7 +3,7 @@ import type { Dimensions } from "../Dims";
 import type { LoadedModels } from "../loadModel";
 import { createBeamBetweenPoints } from "../helpers/createBeamBetweenPoints";
 import { createParallelBeams } from "../helpers/createParallelBeams";
-import { createDeckingBoard } from "../createDeckingBoard";
+import { createDeckingBoard } from "../helpers/createDeckingBoard";
 import { OUTER_FASCIA_OVERHANG } from "./Buildfascialayers";
 
 export function buildDecking(
