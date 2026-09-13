@@ -1,5 +1,5 @@
 import { createCanopyEngine } from "./canopy/Createcanopyengine";
-import type { Dimensions } from "./canopy/Dims";
+import type { Dimensions } from "./canopy/dims";
 
 const host = document.querySelector<HTMLDivElement>("#canvas-host")!;
 const widthInput = document.querySelector<HTMLInputElement>("#width")!;

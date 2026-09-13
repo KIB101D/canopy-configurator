@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import type { Dimensions } from "./Dims";
+import type { Dimensions } from "./dims";
 import { loadAllModels } from "./loadModel";
 import type { LoadedModels } from "./loadModel";
 import type { CanopyMaterials } from "./loadModel";
@@ -117,8 +117,6 @@ export function createCanopyEngine(host: HTMLDivElement) {
     applyMaterial(models.roofingTile, asphalt);
 
     // перебудовуємо, щоб уже видимі копії на сцені підхопили нове посилання на матеріал
-    // (.clone() копіює посилання на матеріал В МОМЕНТ клонування, тому старі
-    // інстанси на сцені самі по собі не змінюються — треба перестворити їх)
     if (lastDims) {
       rebuild(lastDims);
     }

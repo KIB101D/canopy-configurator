@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { Dimensions } from "../Dims";
+import type { Dimensions } from "../dims";
 import type { LoadedModels } from "../loadModel";
 import { createBeamBetweenPoints } from "../helpers/createBeamBetweenPoints";
 
