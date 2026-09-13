@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Canopy Configurator</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: sans-serif;
+      }
+      canvas {
+        display: block;
+      }
+      #controls {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 10;
+      }
+      #controls label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 14px;
+      }
+      #controls input {
+        width: 70px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-host"></div>
+    <div id="controls">
+      <label
+        >Ширина (м):
+        <input id="width" type="number" min="2" max="8" step="0.1" value="3"
+      /></label>
+      <label
+        >Висота (м):
+        <input id="height" type="number" min="2" max="8" step="0.1" value="2.2"
+      /></label>
+      <label
+        >Глибина (м):
+        <input id="depth" type="number" min="2" max="8" step="0.1" value="5"
+      /></label>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
