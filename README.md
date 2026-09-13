@@ -11,6 +11,10 @@
 - **Vite** — збірка та dev-сервер
 - Геометрія — `.obj`, матеріали — `.glb` (`Canopy_Materials.glb`)
 
+## Demo
+
+[Demo Link](https://canopy-configurator-omega.vercel.app/)
+
 ## Запуск
 
 ```bash
