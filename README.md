@@ -6,10 +6,10 @@
 
 ## Технології
 
-- **Three.js** — рендеринг 3D-сцени, без React Three Fiber чи інших надбудов
+- **Three.js** - рендеринг 3D-сцени, без React Three Fiber чи інших надбудов
 - **TypeScript** (vanilla, без UI-фреймворка)
-- **Vite** — збірка та dev-сервер
-- Геометрія — `.obj`, матеріали — `.glb` (`Canopy_Materials.glb`)
+- **Vite** - збірка та dev-сервер
+- Геометрія - `.obj`, матеріали - `.glb` (`Canopy_Materials.glb`)
 
 ## Demo
 
@@ -28,7 +28,7 @@ npm run dev
 
 - Форма з трьома полями (ширина/висота/глибина), обмеженими діапазоном 2–8 м
 - Перебудова 3D-моделі в реальному часі при зміні будь-якого параметра
-- Перемикач "textures" — вмикає/вимикає реальні матеріали (дерево/асфальт/алюміній) на користь простого сірого заповнювача
+- Перемикач "textures" - вмикає/вимикає реальні матеріали (дерево/асфальт/алюміній) на користь простого сірого заповнювача
 - Власні стрілочки збільшення/зменшення значень (крок 0.1 м)
 
 ## Структура проєкту
@@ -36,22 +36,22 @@ npm run dev
 ```
 src/
   canopy/
-    dims.ts                    — тип Dimensions
-    loadModel.ts               — завантаження .obj геометрії та .glb матеріалів
-    createCanopyEngine.ts      — оркестратор сцени: init(), rebuild(dims), setTexturesEnabled()
-    createBeamBetweenPoints.ts — хелпер: балка між двома точками
-    createParallelBeams.ts     — хелпер: ряд паралельних балок
-    createDeckingBoard.ts      — хелпер: дошка настилу/покрівлі
+    dims.ts                    - тип Dimensions
+    loadModel.ts               - завантаження .obj геометрії та .glb матеріалів
+    createCanopyEngine.ts      - оркестратор сцени: init(), rebuild(dims), setTexturesEnabled()
+    createBeamBetweenPoints.ts - хелпер: балка між двома точками
+    createParallelBeams.ts     - хелпер: ряд паралельних балок
+    createDeckingBoard.ts      - хелпер: дошка настилу/покрівлі
     build/
-      buildFrame.ts               — колони + кутові розкоси
-      buildRimBeam.ts             — контурна балка периметру
-      buildFasciaLayers.ts        — внутрішній і зовнішній фриз
-      buildRoofStructure.ts       — настил, крокви, вставки
-      buildRoofEdgeAndRoofing.ts  — профіль периметру та покрівля
-  main.ts                     — точка входу, форма, керування станом
+      buildFrame.ts               - колони + кутові розкоси
+      buildRimBeam.ts             - контурна балка периметру
+      buildFasciaLayers.ts        - внутрішній і зовнішній фриз
+      buildRoofStructure.ts       - настил, крокви, вставки
+      buildRoofEdgeAndRoofing.ts  - профіль периметру та покрівля
+  main.ts                     - точка входу, форма, керування станом
 index.html
 ```
 
 ## Джерело моделей
 
-Усі `.obj`-моделі та `Canopy_Materials.glb` — надані як частина технічного завдання (документація в `docs/` за потреби).
+Усі `.obj`-моделі та `Canopy_Materials.glb` - надані як частина технічного завдання (документація в `docs/` за потреби).
