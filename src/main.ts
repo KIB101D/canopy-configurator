@@ -11,33 +11,39 @@ const texturesCheckbox =
 const MIN_DIM = 2;
 const MAX_DIM = 8;
 
-function clamp(value: number): number {
-  return Math.min(Math.max(value, MIN_DIM), MAX_DIM);
-}
-
 const engine = createCanopyEngine(host);
 
 let dims: Dimensions = {
-  width: clamp(parseFloat(widthInput.value)),
-  height: clamp(parseFloat(heightInput.value)),
-  depth: clamp(parseFloat(depthInput.value)),
+  width: Math.max(parseFloat(widthInput.value) || 0, MIN_DIM),
+  height: Math.max(parseFloat(heightInput.value) || 0, MIN_DIM),
+  depth: Math.max(parseFloat(depthInput.value) || 0, MIN_DIM),
 };
 
+// валілація інпутів
 function handleInput(key: keyof Dimensions, input: HTMLInputElement) {
   const parsed = parseFloat(input.value);
   if (Number.isNaN(parsed)) return;
 
-  dims = { ...dims, [key]: clamp(parsed) };
-  engine.rebuild(dims);
-}
+  let fieldValue = parsed;
+  if (parsed < 0) fieldValue = 0;
+  if (parsed > MAX_DIM) fieldValue = MAX_DIM;
 
-function handleBlur(key: keyof Dimensions, input: HTMLInputElement) {
-  input.value = String(dims[key]);
+  if (fieldValue !== parsed) {
+    input.value = String(fieldValue);
+  }
+
+  const warningEl = document.querySelector<HTMLSpanElement>(`#${key}-warning`);
+  if (warningEl) {
+    warningEl.textContent =
+      fieldValue < MIN_DIM ? `мінімум ${MIN_DIM} м (буде застосовано)` : "";
+  }
+
+  dims = { ...dims, [key]: Math.max(fieldValue, MIN_DIM) }; // рушій завжди отримує безпечне 2–8
+  engine.rebuild(dims);
 }
 
 function bindDimensionInput(key: keyof Dimensions, input: HTMLInputElement) {
   input.addEventListener("input", () => handleInput(key, input));
-  input.addEventListener("blur", () => handleBlur(key, input));
 }
 
 bindDimensionInput("width", widthInput);

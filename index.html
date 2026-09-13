@@ -2,6 +2,10 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
     <title>Canopy Configurator</title>
     <style>
       body {
@@ -118,6 +122,49 @@
       }
       #texture-toggle input {
         accent-color: #b8783c;
+      }
+
+      @media (max-width: 480px) {
+        #dims-bar {
+          position: fixed;
+          top: max(12px, env(safe-area-inset-top));
+          right: 10px;
+          left: auto;
+          bottom: auto;
+          transform: none;
+          flex-direction: column;
+        }
+
+        .dim-field {
+          padding: 6px 12px;
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dim-field:last-child {
+          border-bottom: none;
+        }
+
+        .dim-field label {
+          font-size: 10px;
+        }
+
+        .dim-field input {
+          width: 42px;
+          font-size: 16px; /* лишаємо 16px, щоб iOS Safari не зумив поле при фокусі */
+        }
+
+        .stepper button {
+          width: 22px;
+          height: 16px;
+          font-size: 10px;
+        }
+
+        #texture-toggle {
+          bottom: max(20px, calc(env(safe-area-inset-bottom) + 8px));
+          right: 10px;
+          padding: 8px 10px;
+          font-size: 12px;
+        }
       }
     </style>
   </head>
