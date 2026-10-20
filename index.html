@@ -2,247 +2,149 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Canopy Configurator</title>
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        font-family: -apple-system, "Segoe UI", sans-serif;
-      }
-      canvas {
-        display: block;
-      }
-
-      #dims-bar {
-        position: fixed;
-        left: 50%;
-        bottom: 20px;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: stretch;
-        background: #1c1c1a;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
-        overflow: hidden;
-        z-index: 10;
-      }
-
-      .dim-field {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 8px 18px;
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .dim-field:last-child {
-        border-right: none;
-      }
-
-      .dim-field label {
-        font-size: 11px;
-        color: #9a9690;
-        letter-spacing: 0.02em;
-        margin-bottom: 2px;
-      }
-
-      .dim-value {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .stepper {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-
-      .stepper button {
-        all: unset;
-        cursor: pointer;
-        width: 12px;
-        height: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6a665f;
-        font-size: 8px;
-        line-height: 1;
-        transition: color 0.15s ease;
-      }
-
-      .stepper button:hover {
-        color: #b8783c;
-      }
-
-      .dim-field input {
-        width: 48px;
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        color: #ece8e0;
-        font-family: "SF Mono", "Consolas", monospace;
-        font-size: 16px;
-        padding: 2px 0;
-        transition: border-color 0.15s ease;
-      }
-      .dim-field input:focus {
-        outline: none;
-        border-bottom-color: #b8783c;
-      }
-      .dim-field input::-webkit-outer-spin-button,
-      .dim-field input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      .dim-unit {
-        font-size: 13px;
-        color: #b8783c;
-      }
-
-      #texture-toggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: #1c1c1a;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
-        padding: 10px 14px;
-        color: #ece8e0;
-        font-size: 13px;
-        z-index: 10;
-      }
-      #texture-toggle input {
-        accent-color: #b8783c;
-      }
-
-      @media (max-width: 480px) {
-        #dims-bar {
-          position: fixed;
-          top: max(12px, env(safe-area-inset-top));
-          right: 10px;
-          left: auto;
-          bottom: auto;
-          transform: none;
-          flex-direction: column;
-        }
-
-        .dim-field {
-          padding: 6px 12px;
-          border-right: none;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .dim-field:last-child {
-          border-bottom: none;
-        }
-
-        .dim-field label {
-          font-size: 10px;
-        }
-
-        .dim-field input {
-          width: 42px;
-          font-size: 16px; /* лишаємо 16px, щоб iOS Safari не зумив поле при фокусі */
-        }
-
-        .stepper button {
-          width: 22px;
-          height: 16px;
-          font-size: 10px;
-        }
-
-        #texture-toggle {
-          bottom: max(20px, calc(env(safe-area-inset-bottom) + 8px));
-          right: 10px;
-          padding: 8px 10px;
-          font-size: 12px;
-        }
-      }
-    </style>
   </head>
   <body>
-    <div id="canvas-host"></div>
-    <div id="controls">
-      <div id="dims-bar">
-        <div class="dim-field">
-          <label>width</label>
-          <div class="dim-value">
-            <input
-              id="width"
-              type="number"
-              min="2"
-              max="8"
-              step="0.1"
-              value="3"
-            />
-            <span class="dim-unit">m</span>
-            <div class="stepper">
-              <button type="button" class="step-up" data-target="width">
-                ▲
-              </button>
-              <button type="button" class="step-down" data-target="width">
-                ▼
-              </button>
-            </div>
+    <div id="app">
+      <main id="viewport">
+        <div id="canvas-host"></div>
+        <div id="plan-view" hidden></div>
+
+        <nav id="toolbar" aria-label="View tools">
+          <div class="tool-group">
+            <button type="button" class="tool" data-action="fullscreen" title="Fullscreen"></button>
+            <button type="button" class="tool" data-action="view" title="Switch to 2D plan"></button>
           </div>
-        </div>
-        <div class="dim-field">
-          <label>height</label>
-          <div class="dim-value">
-            <input
-              id="height"
-              type="number"
-              min="2"
-              max="8"
-              step="0.1"
-              value="2.2"
-            />
-            <span class="dim-unit">m</span>
-            <div class="stepper">
-              <button type="button" class="step-up" data-target="height">
-                ▲
-              </button>
-              <button type="button" class="step-down" data-target="height">
-                ▼
-              </button>
-            </div>
+          <div class="tool-group">
+            <button type="button" class="tool" data-action="zoom-in" title="Zoom in"></button>
+            <button type="button" class="tool" data-action="zoom-out" title="Zoom out"></button>
           </div>
-        </div>
-        <div class="dim-field">
-          <label>depth</label>
-          <div class="dim-value">
-            <input
-              id="depth"
-              type="number"
-              min="2"
-              max="8"
-              step="0.1"
-              value="5"
-            />
-            <span class="dim-unit">m</span>
-            <div class="stepper">
-              <button type="button" class="step-up" data-target="depth">
-                ▲
-              </button>
-              <button type="button" class="step-down" data-target="depth">
-                ▼
-              </button>
-            </div>
+          <div class="tool-group">
+            <button type="button" class="tool is-active" data-action="dimensions" title="Dimension lines" aria-pressed="true"></button>
+            <button type="button" class="tool" data-action="reset" title="Reset view"></button>
           </div>
+        </nav>
+
+        <div id="loader" role="status">
+          <span class="loader-dot"></span>
+          Loading models…
         </div>
-      </div>
-      <label id="texture-toggle">
-        <input id="textures-checkbox" type="checkbox" checked />
-        textures
-      </label>
+      </main>
+
+      <aside id="panel">
+        <header class="panel-header">
+          <p class="eyebrow">Timber canopy</p>
+          <h1>Configurator</h1>
+        </header>
+
+        <div class="sections">
+          <details class="section" name="cfg" open>
+            <summary><span class="step">1</span>Dimensions</summary>
+            <div class="section-body">
+              <div class="dim-row" data-key="width">
+                <div class="dim-head">
+                  <label for="width">Width</label>
+                  <span class="dim-hint">between column centres</span>
+                </div>
+                <div class="dim-control">
+                  <button type="button" class="step-btn" data-step="-1" aria-label="Decrease width">−</button>
+                  <input id="width" class="dim-input" type="number" min="2" max="8" step="0.1" inputmode="decimal" />
+                  <span class="dim-unit">m</span>
+                  <button type="button" class="step-btn" data-step="1" aria-label="Increase width">+</button>
+                </div>
+                <input class="dim-range" type="range" min="2" max="8" step="0.1" aria-label="Width" />
+                <span class="dim-warning" aria-live="polite"></span>
+              </div>
+
+              <div class="dim-row" data-key="depth">
+                <div class="dim-head">
+                  <label for="depth">Depth</label>
+                  <span class="dim-hint">split into 2 bays</span>
+                </div>
+                <div class="dim-control">
+                  <button type="button" class="step-btn" data-step="-1" aria-label="Decrease depth">−</button>
+                  <input id="depth" class="dim-input" type="number" min="2" max="8" step="0.1" inputmode="decimal" />
+                  <span class="dim-unit">m</span>
+                  <button type="button" class="step-btn" data-step="1" aria-label="Increase depth">+</button>
+                </div>
+                <input class="dim-range" type="range" min="2" max="8" step="0.1" aria-label="Depth" />
+                <span class="dim-warning" aria-live="polite"></span>
+              </div>
+
+              <div class="dim-row" data-key="height">
+                <div class="dim-head">
+                  <label for="height">Height</label>
+                  <span class="dim-hint">column height</span>
+                </div>
+                <div class="dim-control">
+                  <button type="button" class="step-btn" data-step="-1" aria-label="Decrease height">−</button>
+                  <input id="height" class="dim-input" type="number" min="2" max="8" step="0.1" inputmode="decimal" />
+                  <span class="dim-unit">m</span>
+                  <button type="button" class="step-btn" data-step="1" aria-label="Increase height">+</button>
+                </div>
+                <input class="dim-range" type="range" min="2" max="8" step="0.1" aria-label="Height" />
+                <span class="dim-warning" aria-live="polite"></span>
+              </div>
+            </div>
+          </details>
+
+          <details class="section" name="cfg">
+            <summary><span class="step">2</span>Walls</summary>
+            <div class="section-body">
+              <div id="wall-picker" class="wall-picker"></div>
+              <p class="picker-hint" id="picker-hint"></p>
+              <div class="wall-types" id="wall-types" role="radiogroup" aria-label="Wall type"></div>
+              <div class="row-actions">
+                <button type="button" class="link-btn" data-walls="perimeter">Apply to all outer sides</button>
+                <button type="button" class="link-btn" data-walls="clear">Clear walls</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="section" name="cfg">
+            <summary><span class="step">3</span>Storage room</summary>
+            <div class="section-body">
+              <p class="section-note">Encloses one bay with timber walls, a glazed door and a plank floor.</p>
+              <div class="field-label">Bay</div>
+              <div class="segmented" data-field="bay">
+                <button type="button" data-value="none">None</button>
+                <button type="button" data-value="back">Back bay</button>
+                <button type="button" data-value="front">Front bay</button>
+              </div>
+              <div class="field-label">Door position</div>
+              <div class="segmented" data-field="door">
+                <button type="button" data-value="side">Long side</button>
+                <button type="button" data-value="end">End wall</button>
+                <button type="button" data-value="partition">Inside</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="section" name="cfg">
+            <summary><span class="step">4</span>Display</summary>
+            <div class="section-body">
+              <label class="switch">
+                <input id="textures-checkbox" type="checkbox" checked />
+                <span class="switch-track"></span>
+                Real materials
+                <span class="switch-hint">wood, asphalt, aluminium</span>
+              </label>
+              <label class="switch">
+                <input id="dimensions-checkbox" type="checkbox" checked />
+                <span class="switch-track"></span>
+                Dimension lines
+              </label>
+            </div>
+          </details>
+        </div>
+
+        <footer class="panel-footer">
+          <dl class="summary" id="summary"></dl>
+          <button type="button" class="primary-btn" id="share-btn">Copy configuration link</button>
+        </footer>
+      </aside>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
