@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import type { Dimensions } from "../dims";
 import type { LoadedModels } from "../loadModel";
+import type { WallsConfig } from "../config";
+import { getWallSegments } from "../config";
 
 export function buildColumns(
   dims: Dimensions,
@@ -31,36 +33,36 @@ export function buildColumns(
   return group;
 }
 
+/**
+ * Кутові розкоси ставимо з обох кінців кожного відкритого прольоту по периметру.
+ * Якщо в прольоті є стіна, розкоси прибираємо — інакше вони пройдуть крізь обшивку.
+ * Для каркасу без стін виходить ті самі 12 розкосів, що й раніше.
+ */
 export function buildCornerBraces(
   dims: Dimensions,
   models: LoadedModels,
+  walls?: WallsConfig,
 ): THREE.Group {
   const group = new THREE.Group();
-  const halfWidth = dims.width / 2;
-  const halfDepth = dims.depth / 2;
   const referenceHeight = 2.2;
 
-  const braces: { x: number; z: number; rotation: number }[] = [
-    { x: -halfWidth, z: -halfDepth, rotation: 0 },
-    { x: -halfWidth, z: halfDepth, rotation: 90 },
-    { x: -halfWidth, z: halfDepth, rotation: 0 },
-    { x: halfWidth, z: 0, rotation: 90 },
-    { x: halfWidth, z: 0, rotation: 270 },
-    { x: -halfWidth, z: 0, rotation: 90 },
-    { x: -halfWidth, z: 0, rotation: 270 },
-    { x: halfWidth, z: -halfDepth, rotation: 180 },
-    { x: halfWidth, z: -halfDepth, rotation: 270 },
-    { x: halfWidth, z: halfDepth, rotation: 90 },
-    { x: halfWidth, z: halfDepth, rotation: 180 },
-    { x: -halfWidth, z: -halfDepth, rotation: 270 },
-  ];
+  for (const segment of getWallSegments(dims)) {
+    if (!segment.perimeter) continue;
+    if (walls && walls[segment.id] !== "none") continue;
 
-  for (const brace of braces) {
-    const instance = models.cornerBeam.clone();
-    instance.position.set(brace.x, 0, brace.z);
-    instance.scale.y = dims.height / referenceHeight;
-    instance.rotation.y = THREE.MathUtils.degToRad(brace.rotation);
-    group.add(instance);
+    const ends = [
+      { at: segment.from, toward: segment.to },
+      { at: segment.to, toward: segment.from },
+    ];
+
+    for (const { at, toward } of ends) {
+      const instance = models.cornerBeam.clone();
+      instance.position.set(at.x, 0, at.z);
+      instance.scale.y = dims.height / referenceHeight;
+      // модель розкосу дивиться вздовж +X, тож повертаємо її в бік прольоту
+      instance.rotation.y = Math.atan2(-(toward.z - at.z), toward.x - at.x);
+      group.add(instance);
+    }
   }
 
   return group;
